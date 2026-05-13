@@ -1,4 +1,4 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -35,7 +35,6 @@
             border: none;
             cursor: pointer;
             border-radius: 5px;
-            margin-top: 5px;
         }
 
         .project {
@@ -56,19 +55,16 @@
     <p>Welcome to my personal portfolio website</p>
 </header>
 
-<!-- ABOUT -->
 <section>
     <h2>About Me</h2>
     <p>I am a web development student.</p>
 </section>
 
-<!-- SKILLS -->
 <section>
     <h2>Skills</h2>
     <p>HTML | CSS | JavaScript</p>
 </section>
 
-<!-- ADD PROJECT -->
 <section>
     <h2>Add New Project</h2>
 
@@ -83,13 +79,11 @@
 
 <hr>
 
-<!-- PROJECTS -->
 <section>
     <h2>Projects</h2>
     <div id="project-list"></div>
 </section>
 
-<!-- CLICK ME -->
 <section>
     <h2>Click Me</h2>
     <button onclick="showMessage()">Click Me</button>
@@ -98,15 +92,16 @@
 
 <script>
 
-const API = "https://portfolio-website-2-w4ik.onrender.com";
 
-// CLICK BUTTON
+const API = "http://localhost:5000";
+
+// CLICK MESSAGE
 function showMessage() {
     document.getElementById("msg").innerText =
         "Hello Pallavi 🚀 Welcome to your portfolio!";
 }
 
-// ADD PROJECT
+
 function addProject() {
     const title = document.getElementById("title").value;
     const description = document.getElementById("description").value;
@@ -129,14 +124,14 @@ function addProject() {
     });
 }
 
-// LOAD PROJECTS
+
 function loadProjects() {
     fetch(`${API}/projects`)
     .then(res => res.json())
     .then(data => {
         let html = "";
 
-        data.forEach(p => {
+        data.forEach((p) => {
             html += `
             <div class="project">
                 <h3>${p.title}</h3>
@@ -171,7 +166,7 @@ function deleteProject(id) {
     });
 }
 
-// AUTO LOAD
+
 window.onload = loadProjects;
 
 </script>
