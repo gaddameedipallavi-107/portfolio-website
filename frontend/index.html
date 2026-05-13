@@ -98,6 +98,8 @@
 
 <script>
 
+const API = "https://portfolio-website-2-w4ik.onrender.com";
+
 // CLICK BUTTON
 function showMessage() {
     document.getElementById("msg").innerText =
@@ -110,17 +112,17 @@ function addProject() {
     const description = document.getElementById("description").value;
     const tech = document.getElementById("tech").value;
 
-    fetch("http://localhost:5000/projects", {
+    fetch(`${API}/projects`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({ title, description, tech })
     })
-    .then(res => res.text())
+    .then(res => res.json())
     .then(data => {
         document.getElementById("status").innerText = "Project Added 🎉";
-        location.reload();
+        loadProjects();
     })
     .catch(err => {
         document.getElementById("status").innerText = "Error adding project ❌";
@@ -128,40 +130,49 @@ function addProject() {
 }
 
 // LOAD PROJECTS
-fetch("http://localhost:5000/projects")
-.then(res => res.json())
-.then(data => {
-    let html = "";
+function loadProjects() {
+    fetch(`${API}/projects`)
+    .then(res => res.json())
+    .then(data => {
+        let html = "";
 
-    data.forEach(p => {
-        html += `
-        <div class="project">
-            <h3>${p.title}</h3>
-            <p>${p.description}</p>
-            <p>${p.tech}</p>
+        data.forEach(p => {
+            html += `
+            <div class="project">
+                <h3>${p.title}</h3>
+                <p>${p.description}</p>
+                <p>${p.tech}</p>
 
-            <button onclick="deleteProject(${p.id})">Delete</button>
-        </div>
-        `;
+                <button onclick="deleteProject(${p.id})">Delete</button>
+            </div>
+            `;
+        });
+
+        document.getElementById("project-list").innerHTML = html;
+    })
+    .catch(err => {
+        document.getElementById("project-list").innerHTML =
+            "Error fetching projects ❌";
     });
-
-    document.getElementById("project-list").innerHTML = html;
-});
+}
 
 // DELETE PROJECT
 function deleteProject(id) {
-    fetch(`http://localhost:5000/projects/${id}`, {
+    fetch(`${API}/projects/${id}`, {
         method: "DELETE"
     })
-    .then(res => res.text())
+    .then(res => res.json())
     .then(data => {
         alert("Project Deleted 🗑️");
-        location.reload();
+        loadProjects();
     })
     .catch(err => {
         alert("Error deleting project ❌");
     });
 }
+
+// AUTO LOAD
+window.onload = loadProjects;
 
 </script>
 
