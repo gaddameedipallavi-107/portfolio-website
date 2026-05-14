@@ -1,101 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Pallavi Portfolio</title>
+<meta charset="UTF-8">
+<title>Pallavi Portfolio</title>
 
-    <style>
-        body {
-            font-family: Arial;
-            margin: 0;
-            background: #f5f5f5;
-            text-align: center;
-        }
+<style>
+body {
+    font-family: Arial;
+    margin: 0;
+    background: #f5f5f5;
+    text-align: center;
+}
 
-        header {
-            background: black;
-            color: white;
-            padding: 20px;
-        }
+header {
+    background: black;
+    color: white;
+    padding: 20px;
+}
 
-        section {
-            margin: 25px;
-        }
+section {
+    margin: 25px;
+}
 
-        input {
-            padding: 10px;
-            margin: 5px;
-            width: 250px;
-        }
+input {
+    padding: 10px;
+    margin: 5px;
+    width: 250px;
+}
 
-        button {
-            padding: 10px 15px;
-            background: blue;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-        }
+button {
+    padding: 10px 15px;
+    background: blue;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
 
-        .project {
-            background: white;
-            border: 1px solid #ccc;
-            padding: 15px;
-            margin: 10px auto;
-            width: 300px;
-            border-radius: 10px;
-        }
-    </style>
+.project {
+    background: white;
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin: 10px auto;
+    width: 300px;
+    border-radius: 10px;
+}
+</style>
 </head>
 
 <body>
 
 <header>
-    <h1>Pallavi Portfolio</h1>
-    <p>Welcome to my personal portfolio website</p>
+<h1>Pallavi Portfolio</h1>
+<p>Welcome to my personal portfolio website</p>
 </header>
 
 <section>
-    <h2>About Me</h2>
-    <p>I am a web development student.</p>
+<h2>About Me</h2>
+<p>I am a web development student.</p>
 </section>
 
 <section>
-    <h2>Skills</h2>
-    <p>HTML | CSS | JavaScript</p>
+<h2>Skills</h2>
+<p>HTML | CSS | JavaScript</p>
 </section>
 
 <section>
-    <h2>Add New Project</h2>
+<h2>Add New Project</h2>
 
-    <input type="text" id="title" placeholder="Project Title"><br>
-    <input type="text" id="description" placeholder="Description"><br>
-    <input type="text" id="tech" placeholder="Tech Used"><br>
+<input type="text" id="title" placeholder="Project Title"><br>
+<input type="text" id="description" placeholder="Description"><br>
+<input type="text" id="tech" placeholder="Tech Used"><br>
 
-    <button onclick="addProject()">Add Project</button>
+<button onclick="addProject()">Add Project</button>
 
-    <p id="status"></p>
+<p id="status"></p>
 </section>
 
 <hr>
 
 <section>
-    <h2>Projects</h2>
-    <div id="project-list"></div>
+<h2>Projects</h2>
+<div id="project-list"></div>
 </section>
 
 <section>
-    <h2>Click Me</h2>
-    <button onclick="showMessage()">Click Me</button>
-    <p id="msg"></p>
+<h2>Click Me</h2>
+<button onclick="showMessage()">Click Me</button>
+<p id="msg"></p>
 </section>
 
 <script>
 
 
-const API = "http://localhost:5000";
+const API = "http://127.0.0.1:5000";
 
-// CLICK MESSAGE
+
 function showMessage() {
     document.getElementById("msg").innerText =
         "Hello Pallavi 🚀 Welcome to your portfolio!";
@@ -114,13 +114,23 @@ function addProject() {
         },
         body: JSON.stringify({ title, description, tech })
     })
-    .then(res => res.json())
-    .then(data => {
-        document.getElementById("status").innerText = "Project Added 🎉";
+    .then(async res => {
+        let data;
+        try {
+            data = await res.json();
+        } catch {
+            data = await res.text();
+        }
+
+        document.getElementById("status").innerText =
+            data.message || "Project Added 🎉";
+
         loadProjects();
     })
     .catch(err => {
-        document.getElementById("status").innerText = "Error adding project ❌";
+        console.log(err);
+        document.getElementById("status").innerText =
+            "Error adding project ❌";
     });
 }
 
@@ -131,7 +141,7 @@ function loadProjects() {
     .then(data => {
         let html = "";
 
-        data.forEach((p) => {
+        data.forEach(p => {
             html += `
             <div class="project">
                 <h3>${p.title}</h3>
@@ -146,19 +156,20 @@ function loadProjects() {
         document.getElementById("project-list").innerHTML = html;
     })
     .catch(err => {
+        console.log(err);
         document.getElementById("project-list").innerHTML =
             "Error fetching projects ❌";
     });
 }
 
-// DELETE PROJECT
+
 function deleteProject(id) {
     fetch(`${API}/projects/${id}`, {
         method: "DELETE"
     })
     .then(res => res.json())
     .then(data => {
-        alert("Project Deleted 🗑️");
+        alert(data.message || "Deleted");
         loadProjects();
     })
     .catch(err => {
